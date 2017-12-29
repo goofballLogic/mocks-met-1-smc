@@ -1,0 +1,187 @@
+/* https://coolors.co/ffffff-083d77-fe5f55-1c1c1c-ffa400 */
+
+* {
+    box-sizing: border-box;
+    font-family: Arial;
+}
+html {
+    
+    background-color: #083D77;
+    
+}
+
+body {
+    
+    font-size: 10pt;
+    padding: 0;
+    margin: 0;
+    background-color: white;
+    border-top: solid 1px #FE5F55;
+    border-bottom: solid 1px #FE5F55;
+    min-height: 100vh;
+
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.loading:before {
+    content: "/";
+    display: inline-block;
+    animation-name: spin;
+    animation-duration: 250ms;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    line-height: 2em;
+    height: 2em;
+    font-size: 2em;
+    margin-left: 20px;
+    opacity: 0.5;
+}
+
+table {
+    border-collapse: separate;
+    margin-bottom: 1em;
+}
+
+th,
+td {
+
+    padding: 10px;
+
+}
+
+th {
+    border-bottom: solid 1px #ffa400;
+
+}
+
+
+body {
+    display: flex;
+}
+
+main {
+
+    flex: 1;
+    padding: 0 20px;
+
+}
+
+h1 {
+
+    line-height: 2em;
+    margin-bottom: 20px;
+    margin-top: 0;
+    
+}
+
+p {
+
+    margin-top: 0;
+
+}
+
+.sidebar {
+
+    width: 300px;
+    padding: 20px 20px 20px 70px;
+    position: relative;
+    background-color: #1c1c1c;
+    min-height: 100vh;
+    color: white;
+
+}
+
+.sidebar header {
+
+    position: fixed;
+    width: 100vh;
+    height: 60px;
+    text-align: right;
+    left: -100vh;
+    top: 0;
+    line-height: 60px;
+    padding-right: 20px;
+    transform-origin: 100vh 0;
+    transform: rotate(-90deg);
+    background-color: #083D77;
+    color: white;
+    font-size: 1.5em;
+    letter-spacing: 2px;
+    border-bottom: solid 5px #FE5F55;
+
+}
+
+.callout {
+
+    color: #FFA400;
+    font-weight: bold;
+
+}
+
+.callout:before {
+
+    content: "- ";
+}
+
+nav.main + main {
+    
+    padding-top: 30px;
+    
+}
+nav.main {
+    
+    position: absolute;
+    background-color: white;
+    left: 320px;
+    height: 30px;
+    line-height: 30px;
+    
+}
+
+td:first-child {
+    
+    border-left: solid 3px white;
+}
+tr:hover td:first-child {
+    
+    border-left: solid 3px #ffa400;
+    
+}
+a {
+    color: #083D77;
+}
+.columns {
+    
+    display: flex;
+    
+}
+.columns > * {
+    
+    flex: 1;
+    
+}
+.columns > * + * {
+    
+    margin-left: 20px;
+    
+}
+.flex-2 {
+    
+    flex: 2;
+    
+}
+article.inset-viewer {
+    
+    border: solid 10px #EEE;
+    padding: 10px;
+    max-height: 400px;
+    overflow-y: scroll;
+}
