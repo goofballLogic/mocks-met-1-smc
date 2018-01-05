@@ -178,10 +178,56 @@ a {
     flex: 2;
     
 }
-article.inset-viewer {
+.inset-viewer {
     
     border: solid 10px #EEE;
     padding: 10px;
     max-height: 400px;
     overflow-y: scroll;
+}
+
+a.call-to-action {
+    
+    display: inline-block;
+    background-color: #fe5f55;
+    padding: 15px;
+    color: white;
+    
+}
+
+a.call-to-action:hover {
+    
+    box-shadow: 0 0 3px 1px silver;
+}
+
+label {
+    
+    display: block;
+    padding: 20px;
+    
+}
+
+label .label-text {
+    
+    display: inline-block;
+    min-width: 100px;
+    
+}
+
+label + label {
+    
+    border-top: solid 1px silver;
+    
+}
+form .controls {
+    
+    text-align: right;
+    
+}
+
+form {
+    
+    max-width: 600px;
+    background-color: #EEE;
+    padding: 20px;
 }

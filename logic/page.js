@@ -9,10 +9,10 @@
             
             var parsed = parser.parseFromString( something, "text/html" );
             Array.from( parsed.querySelector( "body" ).childNodes ).forEach( node => {
-            
+
                 document.body.appendChild( node );
                 if ( node.tagName === "SCRIPT" ) 
-                    eval( node.textContent );
+                    eval.call( window, node.textContent );
                 else if ( node.querySelectorAll )
                     Array.from( node.querySelectorAll( "script" ) ).forEach( script => eval( script.textContent ) );
                 

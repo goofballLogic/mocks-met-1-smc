@@ -1,0 +1,122 @@
+
+<main>
+    
+    <h1>Create a new challenge</h1>
+    <p>
+        
+        Here you can set up a new challenge and obtain a link to the joining page.
+        
+    </p>
+    <form action="/challenges">
+        
+        <label>
+            
+            <span class="label-text">Name</span>
+            <input type="text" name="name" required />
+            
+        </label>
+        <label>
+            
+            <span class="label-text">Start</span>
+            <input type="date" name="start" required />
+            
+        </label>
+        <label>
+            
+            <span class="label-text">End</span>
+            <input type="date" name="end" required />
+            
+        </label>
+        <label>
+            
+            <span class="label-text">Duration</span>
+            <input type="text" name="duration" readonly />
+            <button type="button" data-add-duration="-7">-1 week</button>
+            <button type="button" data-add-duration="-1">-1 day</button>
+            <button type="button" data-add-duration="1">+1 day</button>
+            <button type="button" data-add-duration="7">+1 week</button>
+            
+        </label>
+        <div class="controls">
+            
+            <input type="submit" value="Create!" />
+            
+        </div>
+        
+    </form>
+    
+</main>
+<script>
+            
+    ( function() {
+    
+        var form = document.querySelector( "form" );
+        var start = form[ "start" ];
+        var end = form[ "end" ];
+        var duration = form[ "duration" ];
+        
+        form.addEventListener( "keyUp", recalculateDuration );
+        form.addEventListener( "click", updateDuration );
+        
+        function parseMaybeDate( value ) {
+            
+            var ret = moment( value );
+            return ret.isValid() ? ret : null;
+    
+        }
+        
+        if ( !parseMaybeDate( start.value ) ) { start.value = ISODate( new Date() ); }
+                
+        function updateDuration( e ) {
+            
+            try {
+            
+                var startDate = parseMaybeDate( start.value );
+                if ( !startDate ) return;
+                var addDuration = e.target && e.target.dataset && e.target.dataset.addDuration;
+                if ( !addDuration ) return;
+                addDuration = parseInt( addDuration, 10 );
+                recalculateDuration();
+                var currentDuration = parseInt( duration.dataset.days || "0" );
+                currentDuration -= currentDuration % addDuration;
+                var endDate = moment( startDate ).add( currentDuration + addDuration - 1, "days" );
+                end.value = ISODate( endDate );
+                recalculateDuration();
+                
+            } catch( ex ) {
+                
+                recalculateDuration();
+                
+            } 
+            
+        }
+        
+        function recalculateDuration() {
+        
+            duration.value = "";    
+            var startDate = parseMaybeDate( start.value )
+            var endDate = parseMaybeDate( end.value );
+            if ( endDate ) endDate.add( 1, "day" );
+            
+            if ( startDate && endDate ) {
+            
+                var diff = moment.duration( endDate.diff( startDate ) );
+                var asDays = Math.floor( diff.asDays() );
+                duration.dataset.days = asDays;
+                if ( asDays % 7 === 0 ) {
+                    
+                    duration.value = ( asDays / 7 ) + " weeks";
+                    
+                } else {
+                    
+                    duration.value =  asDays + " days";
+                    
+                }
+    
+            }
+    
+        }
+        
+    } () );
+        
+</script>
