@@ -1,4 +1,4 @@
-/* global location*/
+/* global DOMParser */
 ( function() {
     
     var parser = new DOMParser();
@@ -12,7 +12,15 @@
 
                 document.body.appendChild( node );
                 if ( node.tagName === "SCRIPT" ) 
-                    eval.call( window, node.textContent );
+                    try {
+                        
+                        eval.call( window, node.textContent );
+                        
+                    } catch( ex ) {
+                        
+                        console.error( ex );
+                        
+                    }
                 else if ( node.querySelectorAll )
                     Array.from( node.querySelectorAll( "script" ) ).forEach( script => eval( script.textContent ) );
                 

@@ -21,13 +21,7 @@
             <input type="date" name="start" required />
             
         </label>
-        <label>
-            
-            <span class="label-text">End</span>
-            <input type="date" name="end" required />
-            
-        </label>
-        <label>
+         <label>
             
             <span class="label-text">Duration</span>
             <input type="text" name="duration" readonly />
@@ -35,6 +29,12 @@
             <button type="button" data-add-duration="-1">-1 day</button>
             <button type="button" data-add-duration="1">+1 day</button>
             <button type="button" data-add-duration="7">+1 week</button>
+            
+        </label>
+        <label>
+            
+            <span class="label-text">End</span>
+            <input type="date" name="end" required />
             
         </label>
         <div class="controls">
@@ -50,6 +50,7 @@
             
     ( function() {
     
+        /*global ISODate, parseISODate, incrementDateByDays, diffAsISODays, asWeeksOrDays */
         var form = document.querySelector( "form" );
         var start = form[ "start" ];
         var end = form[ "end" ];
@@ -58,62 +59,38 @@
         form.addEventListener( "keyUp", recalculateDuration );
         form.addEventListener( "click", updateDuration );
         
-        function parseMaybeDate( value ) {
-            
-            var ret = moment( value );
-            return ret.isValid() ? ret : null;
-    
-        }
+        start.value = ISODate( new Date() );
         
-        if ( !parseMaybeDate( start.value ) ) { start.value = ISODate( new Date() ); }
-                
         function updateDuration( e ) {
             
-            try {
-            
-                var startDate = parseMaybeDate( start.value );
-                if ( !startDate ) return;
-                var addDuration = e.target && e.target.dataset && e.target.dataset.addDuration;
-                if ( !addDuration ) return;
-                addDuration = parseInt( addDuration, 10 );
-                recalculateDuration();
-                var currentDuration = parseInt( duration.dataset.days || "0" );
-                currentDuration -= currentDuration % addDuration;
-                var endDate = moment( startDate ).add( currentDuration + addDuration - 1, "days" );
-                end.value = ISODate( endDate );
-                recalculateDuration();
-                
-            } catch( ex ) {
-                
-                recalculateDuration();
-                
-            } 
+            var startDate = parseISODate( start.value );
+            if ( !startDate ) return;
+            var addDuration = parseInt( ( e.target && e.target.dataset && e.target.dataset.addDuration ) || "0", 10 );
+            if ( !addDuration ) return;
+            var currentDuration = recalculateDuration();
+            var newDuration = addDuration + currentDuration;
+            newDuration -= newDuration % addDuration;
+            newDuration = Math.max( newDuration, 1 );
+            var endDate = incrementDateByDays( startDate, newDuration - 1 );
+            end.value = ISODate( endDate );
+            recalculateDuration();
             
         }
         
         function recalculateDuration() {
         
             duration.value = "";    
-            var startDate = parseMaybeDate( start.value )
-            var endDate = parseMaybeDate( end.value );
-            if ( endDate ) endDate.add( 1, "day" );
-            
+            var startDate = parseISODate( start.value );
+            var endDate = parseISODate( end.value || start.value );
+            endDate.setDate( endDate.getDate() + 1 );
             if ( startDate && endDate ) {
             
-                var diff = moment.duration( endDate.diff( startDate ) );
-                var asDays = Math.floor( diff.asDays() );
-                duration.dataset.days = asDays;
-                if ( asDays % 7 === 0 ) {
-                    
-                    duration.value = ( asDays / 7 ) + " weeks";
-                    
-                } else {
-                    
-                    duration.value =  asDays + " days";
-                    
-                }
+                var diff = diffAsISODays( endDate, startDate );
+                duration.dataset.days = diff;
+                duration.value = asWeeksOrDays( diff );
     
             }
+            return parseInt( duration.dataset.days || "0" );
     
         }
         

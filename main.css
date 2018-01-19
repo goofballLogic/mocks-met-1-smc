@@ -53,7 +53,7 @@ table {
 th,
 td {
 
-    padding: 10px;
+    padding: 5px 10px;
 
 }
 
@@ -76,16 +76,9 @@ main {
 
 h1 {
 
-    line-height: 2em;
     margin-bottom: 20px;
-    margin-top: 0;
+    margin-top: 1em;
     
-}
-
-p {
-
-    margin-top: 0;
-
 }
 
 .sidebar {
@@ -97,6 +90,12 @@ p {
     min-height: 100vh;
     color: white;
 
+}
+
+.sidebar.sidebar-minimal {
+    
+    width: auto;
+    
 }
 
 .sidebar header {
@@ -178,6 +177,12 @@ a {
     flex: 2;
     
 }
+.flex-300 {
+    
+    flex-basis: auto;
+    max-width: 300px;
+    overflow: auto;
+}
 .inset-viewer {
     
     border: solid 10px #EEE;
@@ -230,4 +235,27 @@ form {
     max-width: 600px;
     background-color: #EEE;
     padding: 20px;
+}
+p {
+    margin: 0;
+}
+* + p {
+    
+    margin-top: 1em;
+    
+}
+* + li {
+    
+    margin-top: 0.5em;
+    
+}
+section.readable {
+    
+    max-width: 800px;
+    padding: 20px 0 40px 0;
+    
+}
+.page-logo {
+    
+    
 }

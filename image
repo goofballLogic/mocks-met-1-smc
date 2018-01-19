@@ -1,0 +1,34 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Saving image</title>
+    </head>
+    <body>
+    
+        Processing...
+        <div id="result"></div>
+        <script src="logic/storage.js"></script>
+        <script src="logic/action.js"></script>
+        <script>
+
+            var result = document.querySelector( "#result" );
+            try {        
+            
+                var id = urlParams.id;
+                var imageName = urlParams.image;
+                var storedImage = urlParams[ "stored-image" ];
+                var data = localStorage[ storedImage ];
+                localStorage.removeItem( storedImage );
+                if ( !imageName ) throw new Error( "No image uploaded" );
+                localStorage[ id + "-image" ] = data;
+                location.href = "/challenge.html?id=" + id;
+
+            } catch( ex ) {
+            
+                result.innerHTML = "<h1>" + ex.message + "</h1>";
+                
+            }
+
+        </script>
+    </body>
+</html>

@@ -1,0 +1,35 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Saving challenge</title>
+    </head>
+    <body>
+    
+        Processing...
+        <div id="result"></div>
+        <script src="logic/storage.js"></script>
+        <script src="logic/action.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
+        <script>
+
+            var result = document.querySelector( "#result" );
+            try {        
+            
+                var id = urlParams.id;
+                var instructions = urlParams.instructions;
+                if ( !id ) { throw new Error( "Id missing" ); }
+                var challenge = challenges.find( c => c.id === id );
+                if ( !challenge ) { throw new Error( "Challenge not found" ); }
+                challenge.instructions = instructions;
+                saveToStore( challenges );
+                location.href = "/challenge.html?id=" + id;
+
+            } catch( ex ) {
+            
+                result.innerHTML = "<h1>" + ex.message + "</h1>";
+                
+            }
+
+        </script>
+    </body>
+</html>

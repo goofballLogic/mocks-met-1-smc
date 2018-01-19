@@ -4,6 +4,7 @@
         <title>Saving challenge</title>
     </head>
     <body>
+    
         Processing...
         <div id="result"></div>
         <script src="logic/storage.js"></script>
@@ -25,9 +26,10 @@
                 end = moment( end );
                 if ( !start.isValid() ) throw new Error( "Start value invalid: " + urlParams.start );
                 if ( !end.isValid() ) throw new Error( "End value invalid: " + urlParams.end );
-                challenges.push( { id: newid(), start: ISODate( start ), end: ISODate( end ), name: name } );
+                var cid = newid();
+                challenges.push( { id: cid, start: ISODate( start ), end: ISODate( end ), name: name } );
                 saveToStore( challenges );
-                location.href = "/";
+                location.href = "/challenge.html?id=" + cid;
 
             } catch( ex ) {
             

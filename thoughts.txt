@@ -1,0 +1,9 @@
+2018-01-15
+----------
+I need to build these website prototypes in order to make sure that the libraries I am building for:
+ - storage
+ - ui
+ are forced into being generic enough to serve at least 3 use cases. This makes the libraries more robust, and more aligned with the needs of generic solution assembly.
+However:
+ - I'm falling more and more behind in schedule and building these mockups is actually quite time consuming. I keep thinking of more and more things which would need to be done for the prototype to be completed.
+ - It's not particularly fun. Things which are fun are generally predicters of better results.

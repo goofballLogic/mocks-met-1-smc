@@ -1,0 +1,15 @@
+.ql-editor p {
+    
+    margin: 0;
+    
+}
+.ql-editor * + p {
+    
+    margin-top: 1em;
+    
+}
+.ql-editor * + li {
+    
+    margin-top: 0.5em;
+    
+}

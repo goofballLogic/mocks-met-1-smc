@@ -1,0 +1,57 @@
+
+<main class="columns">
+    
+    <section class="column flex-300">
+    
+        <h1 class="name-data"></h1>
+        <h3>
+            Sign up here!
+        </h3>
+        <p>
+            
+            Enter your email and click submit. We'll e-mail you a link which will let you activate this challenge and choose your username (if you don't already have one).
+            <br /><br />
+            
+        </p>
+        <form action="/sign-ups">
+            
+            <input type="hidden" name="id" class="value-id-data" />
+            <input type="email" name="email" />
+            <input type="submit" value="Sign up" />
+        
+        </form>
+        <img class="src-image-data page-logo" style="display: none" />
+    
+    </section>
+    <section class="column">
+        
+        <section class="readable instructions-data">
+            
+        </section>
+        
+    </section>
+    
+</main>
+<script>
+    
+    /*global challenges, urlParams, localStorage*/
+    var id = urlParams.challenge;
+    var challenge = challenges.find( c => c.id == id );
+    if ( !challenge ) throw new Error( "Challenge not found" );
+    var element;
+    for( element of document.querySelectorAll( ".name-data" ) )
+        element.textContent = challenge.name;
+    document.querySelector( ".instructions-data" ).innerHTML = challenge.instructions;
+    for( element of document.querySelectorAll( ".value-id-data" ) )
+        element.value = challenge.id;
+        
+    var imageData = localStorage[ challenge.id + "-image" ];
+    if ( imageData ) {
+
+        var pageLogo = document.querySelector( ".src-image-data" );
+        pageLogo.src = imageData;
+        pageLogo.style.display = "block";
+        
+    }
+    
+</script>

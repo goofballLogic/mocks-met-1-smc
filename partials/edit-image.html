@@ -1,0 +1,67 @@
+<main>
+    
+    <p>Current image:</p>
+    <img class="src-image-data inset-viewer" src="/ntd-small.png"></img>
+    <form class="editor-form action-data-id" method="GET" action="/image">
+        
+        <input type="hidden" class="value-data-id" name="id" />
+        <input type="file" name="image" />
+        <input type="hidden" name="stored-image" value="temp-upload" />
+        <input type="submit" value="Save" />
+        <img src="" class="preview-image" style="display: none;" />
+        
+    </form>
+</main>
+<script>
+
+    /* global challenges, urlParams, localStorage */
+    var challenge = challenges.find( c => c.id === urlParams.id );
+    var imageData = localStorage[ challenge.id + "-image" ];
+    if( imageData ) document.querySelector( ".src-image-data" ).src = imageData;
+
+    var idAction = document.querySelector( ".action-data-id" );
+    idAction.action = idAction.action.replace( "{id}", challenge.id );
+    document.querySelector( ".value-data-id" ).value = challenge.id;
+    function uploadAs( name, file ) {
+        
+        return new Promise( function( resolve, reject ) {
+
+            // thanks: https://stackoverflow.com/a/754398/275501
+            var reader = new FileReader();
+            reader.onload = function( e ) {
+
+                localStorage[ name ] = reader.result;
+                resolve();
+                
+            };
+            reader.onerror = function( e ) { 
+                
+                console.error( reader );
+                reject( e );
+                
+            };
+            reader.readAsDataURL(file, "UTF-8");
+            
+        } );
+
+    }
+    var previewImage = document.querySelector( ".preview-image" );
+    document.querySelector( ".editor-form" )[ "image" ].addEventListener( "change", function( e ) {
+        
+        var file = e.target.files[ 0 ];
+        if ( !file ) return;
+        uploadAs( "temp-upload", file ).then( function() {
+          
+             previewImage.src = localStorage[ "temp-upload" ];
+             previewImage.style.display = "block";
+             
+        } ).catch( function( err ) {
+          
+            e.target.value = "";
+            console.error( err );
+            
+        } );
+        
+    } );
+    
+</script>

@@ -17,22 +17,55 @@
             </tr>
         
         </thead>
-        <tbody>
-        
-            <tr>
-            
-                <td>World Radio Day Maintenance Challenge</td>
-                <td>Wednesday, December 13th, 2017</td>
-                <td>Tuesday, February 13th, 2018</td>
-                <td>9 weeks</td>
-                <td>64</td>
-                <td><a href="/challenge.html?id=1">open</a></td>
-                
-            </tr>  
+        <tbody id="challenges">
             
         </tbody>
         
     </table>
+    <template id="challenge-row">
+        
+        <tr>
+            
+            <td class="name-data"></td>
+            <td class="start-data"></td>
+            <td class="end-data"></td>
+            <td class="duration-data"></td>
+            <td class="count-data"></td>
+            <td><a href="/challenge.html?id={id}" class="id-href-data">open</a></td>
+                
+        </tr>
+        
+    </template>
+    <script>
+        
+        /*global challenges, moment, asWeeksOrDays*/
+        var template = document.querySelector( "#challenge-row" );
+        var container = document.querySelector( "#challenges" );
+        function byStartDescending( a, b ) {
+            
+            if ( a.start < b.start ) return 1;
+            if ( a.start > b.start ) return -1;
+            return 0;
+            
+        }
+        challenges.sort( byStartDescending ).forEach( function( challenge ) {
+            
+            var startDate = moment( challenge.start );
+            var endDate = moment( challenge.end );
+            var duration = endDate.diff( startDate, "d" ) + 1;
+            var node = document.importNode( template.content, true );
+            node.querySelector( ".name-data" ).textContent = challenge.name;
+            node.querySelector( ".duration-data" ).textContent = asWeeksOrDays( duration );
+            node.querySelector( ".start-data" ).textContent = startDate.format( "dddd, MMMM Do, YYYY" );
+            node.querySelector( ".end-data" ).textContent = endDate.format( "dddd, MMMM Do, YYYY" );
+            node.querySelector( ".count-data" ).textContent = Object.keys( challenge.participants || {} ).length;
+            var link = node.querySelector( ".id-href-data" );
+            link.href = link.href.replace( "{id}", challenge.id );
+            container.appendChild( node );
+            
+        } );
+
+    </script>
     <p>
         
         <a class="call-to-action" href="new-challenge.html">Create a new challenge</a>

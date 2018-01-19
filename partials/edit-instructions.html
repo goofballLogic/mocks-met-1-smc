@@ -1,0 +1,47 @@
+<main>
+    
+    <div id="instructions-editor" class="html-instructions-data"></div>
+    <form class="editor-form action-data-id" method="GET" action="/instructions">
+        
+        <input type="hidden" class="value-data-id" name="id" />
+        <input type="hidden" name="instructions" />
+        <input type="submit" value="Save" />
+        
+    </form>
+</main>
+<script>
+
+    
+    /* global Quill, urlParams */
+    var challenge = challenges.find( c => c.id === urlParams.id );
+    document.querySelector( ".html-instructions-data" ).innerHTML = challenge.instructions;
+    var idAction = document.querySelector( ".action-data-id" );
+    idAction.action = idAction.action.replace( "{id}", challenge.id );
+    document.querySelector( ".value-data-id" ).value = challenge.id;
+    
+    Quill.prototype.getHtml = function() {
+        
+        return this.container.querySelector('.ql-editor').innerHTML;
+        
+    };
+    var instructions = new Quill( "#instructions-editor", {
+  
+        theme: "snow",
+        modules: {
+            
+            clipboard: {
+
+                matchVisual: false
+                
+            }
+
+        }
+      
+    } );
+    document.querySelector( ".editor-form" ).addEventListener( "submit", function( e ) {
+    
+        e.target.instructions.value = instructions.getHtml();
+
+    } );
+    
+</script>
