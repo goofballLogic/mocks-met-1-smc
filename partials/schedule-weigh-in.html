@@ -50,67 +50,94 @@
                 <thead>
                 
                     <th></th>
-                    <th>When</th>
+                    <th>Weigh-in date</th>
+                    <th></th>
                     
                 </thead>
+                <tbody id="scheduled">
+                    
+                    
+                </tbody>
                 
             </table>
-            <tbody>
-                
-                
-            </tbody>
+            
             
         </section>
         
     </div>
+    <template id="scheduled-template">
+        
+        <tr>
+            
+            <td class="index-data"></td>
+            <td class="when-data"></td>
+            <td><a class="href-id-data href-when-data" href="/challenge-weigh-in?cid={id}&when={when}">Detail</a></td>
+            
+        </tr>
+        
+    </template>
     
 </main>
 <script>
 
-    /* global attempt, challenges, populate, urlParams, parseISODate, incrementDateByDays, ISODate */
+    /* global attempt, challenges, populate, urlParams, parseISODate, incrementDateByDays, ISODate, moment, entemplate, orDefault */
     attempt( function() {
         
         var challenge = challenges.find( c => c.id === urlParams.cid );
         if ( !challenge ) { throw new Error( "Challenge not found" ); }
         
+        var weighIns = orDefault( "weighins-" + challenge.id, {} );
+        
         populate( ".name-data", challenge.name );
         populate( ".value-id-data", function( ele ) { ele.value = challenge.id; } );
-console.log( challenge.participants );
         populate( ".count-data", Object.keys( challenge.participants || {} ).length );
-        
-    } );
-    var form = document.querySelector( "#weigh-in" );
-    form[ "when" ].addEventListener( "change", function() {
-        
-        form[ "deadline" ].value = form[ "when" ].value;
-        
-    } );
-    for( var button of document.querySelectorAll( ".deadline-calc" ) )
-        button.addEventListener( "click", function( e ) {
+        var index = 0;
+        var whens = Object.keys( weighIns ).sort().filter( function( x ) { return !x.startsWith( "__" ); } );
+        entemplate( "#scheduled-template", "#scheduled", whens, function( populateNode, value ) {
             
-            var add = e.target.dataset.add;
-            var when = parseISODate( form[ "when" ].value );
-            var deadline = incrementDateByDays( when, add );
-            form[ "deadline" ].value = ISODate( deadline );
+            var niceWhen = moment( parseISODate( value ) ).format( "dddd, Do of MMMM" );
+            populateNode( ".href-id-data", function( ele ) { ele.href = ele.href.replace( "{id}", challenge.id ); } );
+            populateNode( ".href-when-data", function( ele ) { ele.href = ele.href.replace( "{when}", value ); } );
+            populateNode( ".index-data", ++index );
+            populateNode( ".when-data", niceWhen );
             
         } );
-    document.querySelector( "#weigh-in" ).addEventListener( "submit", function( e ) {
         
-        var when = parseISODate( form[ "when" ].value );
-        var deadline = parseISODate( form[ "deadline" ].value );
-        var result = document.querySelector( "#result" );
-        if ( deadline < when ) { 
+        
+        var form = document.querySelector( "#weigh-in" );
+        form[ "when" ].addEventListener( "change", function() {
             
-            e.preventDefault();
-            result.textContent = "Oops! Deadline must be after the weigh-in date";
+            form[ "deadline" ].value = form[ "when" ].value;
             
-        }
-        if ( new Date() > deadline ) { 
+        } );
+        for( var button of document.querySelectorAll( ".deadline-calc" ) )
+            button.addEventListener( "click", function( e ) {
+                
+                var add = e.target.dataset.add;
+                var when = parseISODate( form[ "when" ].value );
+                var deadline = incrementDateByDays( when, add );
+                form[ "deadline" ].value = ISODate( deadline );
+                
+            } );
+        document.querySelector( "#weigh-in" ).addEventListener( "submit", function( e ) {
             
-            e.preventDefault();
-            result.textContent = "Oops! Deadline should be a future date";
+            var when = parseISODate( form[ "when" ].value );
+            var deadline = parseISODate( form[ "deadline" ].value );
+            var result = document.querySelector( "#result" );
+            if ( deadline < when ) { 
+                
+                e.preventDefault();
+                result.textContent = "Oops! Deadline must be after the weigh-in date";
+                
+            }
+            if ( new Date() > deadline ) { 
+                
+                e.preventDefault();
+                result.textContent = "Oops! Deadline should be a future date";
+                
+            }
             
-        }
+        } );
         
     } );
         

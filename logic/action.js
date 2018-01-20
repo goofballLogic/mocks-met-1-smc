@@ -25,6 +25,7 @@ window.attempt = function( logic, append ) {
         if ( !( append && result.innerHTML ) )
             result.innerHTML = "<h1>Oops</h1><p>That didn't work :(</p>";
         result.innerHTML += "<p>" + ex.message + "</p>";
+        result.innerHTML += "<h1>Diagnostic</h1>" + ex.stack;
         result.innerHTML += "<h1>Stored data:<br /><br /></h1><div style='max-width: 600px; font-size: 8pt'>" + JSON.stringify( localStorage, null, 3 ) + "</div>";
         
     }
@@ -45,6 +46,7 @@ window.populate = function( selector, dataOrStrategy, maybeContext ) {
 window.entemplate = function( templateSelector, containerSelector, collection, populateStrategy  ) {
   
     var container = document.querySelector( containerSelector );
+    if ( !container ) { throw new Error( "Container not found" ); }
     container.innerHTML = "";
     var content = document.querySelector( templateSelector ).content;
     collection.forEach( function( item ) {

@@ -44,7 +44,7 @@
                     "",
                     "Weigh-in date: {when}",
                     "Deadline: {deadline}",
-                    "<a href=\"" + makeAbsolute( "/weigh-in?cid=" + id + "&uid={uid}" ) + "\">Weigh in</a>",
+                    "<a href=\"" + makeAbsolute( "/weigh-ins?cid=" + id + "&uid={uid}" ) + "\">Weigh in</a>",
                     "",
                     "regards,",
                     "the " + challenge.name + " team"
