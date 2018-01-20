@@ -1,0 +1,54 @@
+
+<main class="middle-1100">
+    
+    <img class="src-image-data" style="display: none;" />
+    <h1 class="name-data"></h1>
+    <section>
+        
+        <p>Thanks <span class="email-data"></span>! Choose your username below (or accept the existing one) and press the Complete button to complete your sign-up.<br /><br /></p>
+        <form action="sign-up-completions">
+        
+            <input type="hidden" name="cid" class="value-cid-data" />
+            <input type="hidden" name="uid" class="value-uid-data" />
+            <label>
+                Username:
+                <input type="text" name="username" class="value-username-data" required />
+            </label>
+            <input type="submit" value="Complete" />
+            
+        </form>
+        
+    </section>
+    
+</main>
+<script>
+    
+    /*global challenges, urlParams, localStorage*/
+    var id = urlParams.cid;
+    var challenge = challenges.find( c => c.id == id );
+    if ( !challenge ) throw new Error( "Challenge not found" );
+    
+    var uid = urlParams.uid;
+    var user = signups[ uid ];
+    if ( !user ) throw new Error( "User not found" );
+    
+    var element;
+    for( element of document.querySelectorAll( ".name-data" ) )
+        element.textContent = challenge.name;
+    for( element of document.querySelectorAll( ".value-cid-data" ) )
+        element.value = id;
+    for( element of document.querySelectorAll( ".value-uid-data" ) )
+        element.value = uid;
+    for( element of document.querySelectorAll( ".value-username-data" ) )
+        element.value = user.username || "";
+    
+    var imageData = localStorage[ challenge.id + "-image" ];
+    if ( imageData ) {
+
+        var pageLogo = document.querySelector( ".src-image-data" );
+        pageLogo.src = imageData;
+        pageLogo.style.display = "block";
+        
+    }
+    
+</script>

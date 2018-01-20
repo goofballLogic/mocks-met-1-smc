@@ -1,0 +1,45 @@
+<html>
+
+    <head>
+    
+        <meta charset="utf-8">
+        <title>Complete your sign-up</title>
+        
+    </head>
+    <body>
+    
+        Processing...
+        <div id="result"></div>
+        <script src="logic/storage.js"></script>
+        <script src="logic/action.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
+        <script>
+
+            var result = document.querySelector( "#result" );
+            try {        
+            
+                var uid = urlParams.uid;
+                if ( !uid ) { throw new Error( "Oops :( That link didn't work. (code 1)" ); }
+                
+                var signup = signups[ uid ];
+                if ( !signup ) { throw new Error( "Oops :( That link didn't work. (code 2)" ); }
+                
+                var cid = signup.challenge;
+                var challenge = challenges.find( c => c.id === cid );
+                if ( !challenge ) { throw new Error( "Oops :( That link didn't work. (code 3)" ); }
+                
+                signup.verified = true;
+                delete signup.challenge;
+                saveToStore( signups );
+                
+                location.href = "/sign-up-activation.html?cid=" + cid + "&uid=" + uid;
+                
+            } catch( ex ) {
+            
+                result.innerHTML = "<h1>" + ex.message + "</h1>";
+                
+            }
+
+        </script>
+    </body>
+</html>

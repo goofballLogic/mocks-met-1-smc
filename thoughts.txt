@@ -1,3 +1,8 @@
+2018-01-20
+----------
+Even though it takes a long time, the process of producing these prototypes is providing a lot of insight into needed behaviours. I'll plough ahead with these for now and reassess at the end of the project.
+
+
 2018-01-15
 ----------
 I need to build these website prototypes in order to make sure that the libraries I am building for:

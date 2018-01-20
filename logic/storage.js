@@ -64,3 +64,6 @@ window.challenges = orDefault("challenges", [{
 
 }]);
 
+window.signups = orDefault( "signups", {
+    
+} );
