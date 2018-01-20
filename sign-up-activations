@@ -15,8 +15,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
         <script>
 
-            var result = document.querySelector( "#result" );
-            try {        
+            attempt( function() {        
             
                 var uid = urlParams.uid;
                 if ( !uid ) { throw new Error( "Oops :( That link didn't work. (code 1)" ); }
@@ -34,11 +33,7 @@
                 
                 location.href = "/sign-up-activation.html?cid=" + cid + "&uid=" + uid;
                 
-            } catch( ex ) {
-            
-                result.innerHTML = "<h1>" + ex.message + "</h1>";
-                
-            }
+            } );
 
         </script>
     </body>

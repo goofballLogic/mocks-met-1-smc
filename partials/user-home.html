@@ -1,0 +1,71 @@
+<span id="result"></span>
+<main class="middle-1100">
+    
+    <section class="readable">
+            
+        <h1>Welcome <span class="title-data"></span></h1>
+        <p>
+            E-mail address: <span class="email-data"></span>
+        </p>
+        <p>
+            Current username: <span class="username-data"></span>
+        </p>
+        <p>
+            Signed-up: <span class="when-data"></span>
+        </p>
+        <h1>Active challenges</h1>
+        <ul id="active-challenges">
+            
+            
+            
+        </ul>
+        <h1>Past challenges</h1>
+        <ul id="past-challenges">
+            
+            
+        </ul>
+        
+    </section>
+    <template id="challenge">
+    
+        <li>
+            
+            <a class="call-to-action name-data href-cid-data href-uid-data" href="user-challenge-home.html?cid={cid}&uid={uid}">open</a>
+            <br />
+            <span class="start-data"></span> - <span class="end-data"></span>
+        
+        </li>
+    
+    </template>
+</main>
+<script>
+    
+    /* global attempt, populate, urlParams, signups, moment, entemplate, challenges */
+    attempt( function() {
+        
+        var uid = urlParams.uid;
+        var user = signups[ uid ];
+        if ( !uid ) { throw new Error( "User not found" ); }
+    
+        populate( ".title-data", user.username || user.email );
+        populate( ".email-data", user.who );
+        populate( ".username-data", user.username );
+        populate( ".when-data", moment( user.when ).format( "LLLL" ) );
+        var userChallenges = ( user.challenges || [] ).map( function( id ) {  
+            
+            return challenges.find( function( c ) { return c.id === id; } ); 
+            
+        } );
+        entemplate( "#challenge", "#active-challenges", userChallenges, function( populateNode, data ) {
+            
+            populateNode( ".name-data", data.name );
+            populateNode( ".start-data", moment( data.start ).format( "LLL" ) );
+            populateNode( ".end-data", moment( data.end ).format( "LLL" ) );
+            populateNode( ".href-cid-data", function( el ) { el.href = el.href.replace( "{cid}", data.id ); } );
+            populateNode( ".href-uid-data", function( el ) { el.href = el.href.replace( "{uid}", uid ); } );
+        
+        } );
+        
+    } );
+    
+</script>
