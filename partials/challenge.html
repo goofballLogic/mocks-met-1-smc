@@ -1,16 +1,25 @@
 <main>
     
+    <span id="result"></span>
     <h1 class="name-data"></h1>
     <div class="columns">
         
         <section class="flex-2">
-            
-            <p>Sign up link: 
-                <div class="inset-viewer">
-                    <a class="href-signup-data signup-data" href=""></a>
-                </div>
+
+            <p>
+
+                <a class="href-id-data call-to-action" href="schedule-weigh-in.html?cid={id}">Schedule a weigh in</a>
+
             </p>
-            <p><span class="count-data">?</span> participants</p>
+            <p>Sign up link: 
+
+                <div class="inset-viewer">
+
+                    <a class="href-signup-data signup-data" href=""></a>
+
+                </div>
+
+            </p>
             <p>Instructions: (<a class="href-id-data" href="/edit-instructions.html?id={id}">Edit</a>)</p>
             <article class="inset-viewer instructions-data">
                 
@@ -22,13 +31,14 @@
         </section>
         <section>
             
+            
             <table>
                 
                 <thead>
                     
                     <tr>
                         
-                        <th>Participant</th>
+                        <th><span class="count-data">?</span> participants</th>
                         
                     </tr>
                     
@@ -46,7 +56,7 @@
 </main>
 <template id="participant-template">
     
-    <tr><td><a class="href-key-data key-data" href="/challenge/1/participants/{key}/remove">Remove</a></td></tr>
+    <tr><td><a class="href-uid-data href-id-data key-data" href="/user-challenge-home.html?cid={id}&uid={uid}"></a></td></tr>
     
 </template>
 <script>
@@ -63,6 +73,7 @@
         element.textContent = location.origin + "/sign-up.html?challenge=" + challenge.id;
     for ( element of document.querySelectorAll( ".href-signup-data" ) )
         element.href = location.origin + "/sign-up.html?challenge=" + challenge.id;
+    
     document.querySelector( ".name-data" ).textContent = challenge.name;
     document.title = challenge.name;
     document.querySelector( ".instructions-data" ).innerHTML = challenge.instructions || "?";
@@ -71,14 +82,23 @@
     document.querySelector( ".count-data" ).textContent = Object.keys( challenge.participants || {} ).length;
     var container = document.querySelector( "#participants" );
     var content = document.querySelector( "#participant-template" ).content;
-    Object.keys( challenge.participants || {} ).sort().forEach( function( key ) {
     
-        var node = document.importNode( content, true );
-        node.querySelector( ".key-data" ).textContent = key;
-        var link = node.querySelector( ".href-key-data" );
-        link.href = decodeURIComponent( link.href ).replace( "{key}", key );
-        container.appendChild( node );
+    var partis = Object.keys( challenge.participants || {} ).map( function( username ) { 
+        
+        return { 
+            
+            id: challenge.participants[ username ],
+            username: username
+            
+        };
+        
+    } ).sort();
+    entemplate( "#participant-template", "#participants", partis, function( populateNode, item ) {
+        
+        populateNode( ".key-data", item.username );
+        populateNode( ".href-id-data", function( el ) { el.href = el.href.replace( "{id}", urlParams.id ); } );
+        populateNode( ".href-uid-data", function( el ) { el.href = el.href.replace( "{uid}", item.id ); } );
         
     } );
-    
+
 </script>

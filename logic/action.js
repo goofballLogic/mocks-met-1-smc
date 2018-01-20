@@ -12,7 +12,7 @@ var urlParams;
        urlParams[decode(match[1])] = decode(match[2]);
 })();
 
-window.attempt = function( logic ) {
+window.attempt = function( logic, append ) {
     
     /* global localStorage */
     try {
@@ -22,9 +22,10 @@ window.attempt = function( logic ) {
     } catch( ex ) {
         
         var result = document.querySelector( "#result" ) || document.body;
-        result.innerHTML = "<h1>Oops</h1><p>That didn't work :(.</p>";
-        result.innerHTML += ex.message;
-        result.innerHTML += JSON.stringify( localStorage, null, 3 );
+        if ( !( append && result.innerHTML ) )
+            result.innerHTML = "<h1>Oops</h1><p>That didn't work :(</p>";
+        result.innerHTML += "<p>" + ex.message + "</p>";
+        result.innerHTML += "<h1>Stored data:<br /><br /></h1><div style='max-width: 600px; font-size: 8pt'>" + JSON.stringify( localStorage, null, 3 ) + "</div>";
         
     }
     

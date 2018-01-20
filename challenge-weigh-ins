@@ -1,0 +1,74 @@
+<html>
+
+    <head>
+    
+        <meta charset="utf-8">
+        <title>Scheduling weigh in</title>
+        
+    </head>
+    <body>
+    
+        Processing...
+        <div id="result"></div>
+        <script src="logic/storage.js"></script>
+        <script src="logic/action.js"></script>
+        <script src="logic/date.js"></script>
+        <script src="logic/comms.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
+        <script>
+
+            attempt( function() {        
+            
+                var id = urlParams.id;
+                var challenge = challenges.find( function( c ) { return c.id === id; } );
+                if ( !challenge ) { throw new Error( "Challenge not found" ); }
+                
+                var key = urlParams.when;
+                var when = parseISODate( urlParams.when );
+                var deadline = parseISODate( urlParams.deadline );
+                
+                if ( new Date() > deadline ) { throw new Error( "Deadline before today" ); }
+                if ( deadline < when ) { throw new Error( "Deadline before wiegh-in date" ); }
+
+                var weighIns = orDefault( "weighins-" + id, {} );
+                if ( key in weighIns ) { throw new Error( "Weigh-in already scheduled for that day" ); }
+                
+                var partIds = Object.values( challenge.participants || {} );
+                weighIns[ key ] = partIds.reduce( function( prev, uid ) { return Object.assign( prev, { [ uid ]: {} } ); }, {} );
+                saveToStore( weighIns );
+                var templ = [
+                    
+                    "Hi {title}!,",
+                    "",
+                    "It's that time again! Follow the link below to weigh in.",
+                    "",
+                    "Weigh-in date: {when}",
+                    "Deadline: {deadline}",
+                    "<a href=\"" + makeAbsolute( "/weigh-in?cid=" + id + "&uid={uid}" ) + "\">Weigh in</a>",
+                    "",
+                    "regards,",
+                    "the " + challenge.name + " team"
+                    
+                ].join( "<br />\n" );
+                Object.keys( weighIns[ key ] ).forEach( function( uid ) {
+                
+                    attempt( function() {
+
+                        var user = signups[ uid ];
+                        if ( !user ) { throw new Error( "User " + uid + " not found" ); }
+                        var email = user.who;
+                        var title = user.username || user.who;
+                        var niceWhen = moment( when ).format( "dddd Do, MMMM YYYY" );
+                        var niceDeadline = "End of day " + moment( deadline ).format( "dddd Do, MMMM YYYY" );
+                        var body = templ.replace( "{title}", title ).replace( "{when}", niceWhen ).replace( "{deadline}", niceDeadline ).replace( "{uid}", uid );
+                        sendEmail( email, "Weigh-in deadline: " + niceDeadline, body );
+                        
+                    }, true );
+                
+                } );
+
+            } );
+
+        </script>
+    </body>
+</html>
