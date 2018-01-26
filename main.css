@@ -76,11 +76,16 @@ th {
 
 }
 
-main {
-
+main, aside {
+    
     flex: 1;
     padding: 0 20px;
     overflow: auto;
+    
+}
+main {
+
+    flex: 4;
 
 }
 .public main {
@@ -88,7 +93,7 @@ main {
     padding: 20px 40px;
     border-radius: 20px;
     background-color: rgba( 255, 255, 255, 0.9 );
-    margin-top: 4vh;
+    margin-top: calc(40px + 6vh);
     margin-bottom: 18vh;
 }
 
@@ -153,8 +158,13 @@ h1 {
 
     content: "- ";
 }
+nav.main a + a {
+    
+    margin-left: 10px;
+    
+}
 
-nav.main+main {
+nav.main ~ main {
 
     padding-top: 30px;
 
@@ -170,6 +180,28 @@ nav.main {
 
 }
 
+nav.participant {
+
+    position: absolute;
+    background-color: #1C1C1C;
+    left: 110px;
+    top: 1px;
+    right: 0px;
+    line-height: 30px;
+    padding: 10px 10px;
+}
+
+nav.participant a {
+    
+    color: white;
+    
+}
+
+nav.main ~ aside {
+    
+    padding-top: 90px;
+    
+}
 td:first-child {
 
     border-left: solid 3px white;
@@ -268,8 +300,9 @@ form .controls {
 form {
 
     max-width: 600px;
-    background-color: #EEE;
     padding: 20px;
+    box-shadow: 0 0 15px -5px #083D77;
+    margin: 20px 0;
 }
 
 p {
@@ -300,10 +333,40 @@ section.readable {
     padding: 20px 0 40px 0;
 
 }
+.readable-chart {
+    
+    max-width: 800px;
+    
+}
 
 .middle-1100 {
 
     max-width: 1100px;
     margin-left: auto;
     margin-right: auto;
+}
+
+.ct-series-a .ct-line,
+.ct-series-a .ct-point {
+    
+    stroke: #fe5f55;
+    
+}
+
+ul {
+    
+    padding: 0;
+    list-style: none;
+}
+
+.link-panel {
+    
+    text-decoration: none;
+    
+}
+
+.panel-title {
+    
+    font-size: 1.5em;
+    
 }

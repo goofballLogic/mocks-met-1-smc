@@ -1,0 +1,15 @@
+<nav class="participant">
+    
+    <a href="/user-home.html?uid={uid}" class="href-uid-data">Home</a>
+    
+</nav>
+<script>
+    
+    /* global urlParams, populate, challenges */
+    if ( !( typeof urlParams === "undefined" || typeof populate === "undefined" || typeof challenges === "undefined" || typeof attempt === "undefined" ) ) {
+        
+        populate( ".href-uid-data", function( el ) { el.href = el.href.replace( "{uid}", urlParams.uid ); } );
+
+    }
+    
+</script>

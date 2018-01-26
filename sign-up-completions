@@ -32,6 +32,7 @@
                 if ( username in challenge.participants ) { throw new Error( "That username is already in use. Go back and try another." ); }
                 
                 signup.username = username;
+                signup.challenges = ( signup.challenges || [] ).concat( challenge.id );
                 saveToStore( signups );
                 
                 challenge.participants[ username ] = uid;

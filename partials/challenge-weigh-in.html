@@ -1,0 +1,119 @@
+<main>
+    
+    <div id="result"></div>
+    <h1>
+        
+        <span class="when-data"></span>
+        weigh-in
+        
+    </h1>
+    <section>
+        
+        <h2>Deadline: <span class="deadline-data"></span></h2>
+        <div class="columns">
+            
+            <section>
+            
+                <h3>Still waiting...</h3>
+                <table>
+                    
+                    <tbody class="outstanding-participants">
+                        
+                    </tbody>
+                    
+                </table>
+                <template id="outstanding-participant">
+                    
+                    <tr>
+                        
+                        <td>
+                            
+                            <a href="/user-challenge-home.html?cid={cid}&uid={uid}" class="href-cid-data href-uid-data title-data"></a>
+                            
+                        </td>
+                        <td>
+                            
+                            <a href="/remind-user.html?cid={cid}&uid={uid}&when={when}" class="href-cid-data href-uid-data href-when-data">Send a reminder</a>
+                            
+                        </td>
+                        
+                    </tr>
+                    
+                </template>
+
+            </section>
+            <section>
+                
+                <h3>Weigh-in complete</h3>
+                <table>
+                    
+                    <tbody class="completed-participants">
+                        
+                        
+                    </tbody>    
+
+                </table>
+                <template id="completed-participant">
+                    
+                    <tr>
+                        
+                        <td>
+                            
+                            <a href="/user-challenge-home.html?cid={cid}&uid={uid}" class="href-cid-data href-uid-data title-data"></a>
+                            
+                        </td>
+                        
+                    </tr>
+                    
+                </template>
+            
+            </section>
+        </div>
+        
+    </section>
+    
+</main>
+<script>
+    
+    /* global entemplate, signups, attempt, populate, moment, challenges, parseISODate, urlParams, orDefault */
+    attempt( function() {
+        
+        var when = parseISODate( urlParams.when );
+        var challenge = challenges.find( function( c ) { return c.id === urlParams.cid; } );
+        if ( !challenge ) { throw new Error( "Challenge not found" ); }
+        
+        populate( ".when-data", moment( when ).format( "dddd, Do of MMMM" ) );
+        populate( ".name-data", challenge.name );
+        
+        var weighins = orDefault( "weighins-" + challenge.id, {} );
+        var weighin = weighins[ urlParams.when ];
+        if ( !weighin ) { throw new Error( "Weigh-in not found" ); }
+        
+        var niceDeadline = moment( parseISODate( weighin.deadline ) ).format( "dddd, Do MMMM" );
+        populate( ".deadline-data", niceDeadline );
+        
+        var all = Object.keys( challenge.participants )
+            .map( function( username ) { return { cusername: username, uid: challenge.participants[ username ] }; } )
+            .map( function( part ) { return Object.assign( part, signups[ part.uid ], weighin.participants[ part.uid ] ); } );
+        var outstanding = all.filter( function( x ) { return !x.record; } );
+        var completed = all.filter( function( x ) { return !!x.record; } );
+        
+        entemplate( "#outstanding-participant", ".outstanding-participants", outstanding, function( populateNode, item ) {
+            
+            populateNode( ".href-cid-data", function( el ) { el.href = el.href.replace( "{cid}", challenge.id ); } );
+            populateNode( ".href-uid-data", function( el ) { el.href = el.href.replace( "{uid}", item.uid ); } );
+            populateNode( ".href-when-data", function( el ) { el.href = el.href.replace( "{when}", urlParams.when ); } );
+            populateNode( ".title-data", item.cusername || item.username || item.who );
+            
+        } );
+        entemplate( "#completed-participant", ".completed-participants", completed, function( populateNode, item ) {
+            
+            populateNode( ".href-cid-data", function( el ) { el.href = el.href.replace( "{cid}", challenge.id ); } );
+            populateNode( ".href-uid-data", function( el ) { el.href = el.href.replace( "{uid}", item.uid ); } );
+            populateNode( ".title-data", item.cusername || item.username || item.who );
+            
+        } );
+        
+    } );
+    
+</script>

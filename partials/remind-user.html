@@ -1,0 +1,50 @@
+<main>
+    
+    <div id="result"></div>
+    <h1><span class="when-data"></span> wiegh-in for <span class="title-data"></span></h1>
+    <h3>Note</h3>
+    <p>
+        
+        When you click the button below it will generate <b>1</b> e-mail to <span class="title-data"></span> reminding them to weigh in.
+    
+    </p>
+    <p>
+        
+        <br />
+        
+    </p>
+    <form action="/challenge-weigh-ins">
+        
+        <input type="hidden" name="id" class="value-cid-data" />
+        <input type="hidden" name="uid" class="value-uid-data" />
+        <input type="hidden" name="when" class="value-when-data" />
+        <input type="submit" value="Send reminder" />
+
+    </form> 
+
+</main>
+<script>
+    
+    /* global moment, attempt, challenges, populate, urlParams, signups, orDefault, parseISODate */
+    attempt( function() {
+    
+        var challenge = challenges.find( function( c ) { return c.id === urlParams.cid; } );
+        if ( !challenge ) { throw new Error( "Challenge not found" ); }
+        
+        var weighins = orDefault( "weighins-" + challenge.id, {} );
+        var weighin = weighins[ urlParams.when ];
+        if ( !weighin ) { throw new Error( "Weigh-in not found" ); }
+        
+        var user = signups[ urlParams.uid ];
+        if ( !user ) { throw new Error( "User not found" ); }
+
+        var niceWhen = moment( parseISODate( urlParams.when ) ).format( "dddd, Do MMMM" );
+        populate( ".title-data", user.username || user.who );
+        populate( ".when-data", niceWhen );
+        populate( ".value-cid-data", function( el ) { el.value = challenge.id; } );
+        populate( ".value-uid-data", function( el ) { el.value = urlParams.uid; } );
+        populate( ".value-when-data", function( el ) { el.value = urlParams.when; } );
+        
+    } );
+    
+</script>

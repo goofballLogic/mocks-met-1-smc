@@ -1,0 +1,87 @@
+<main class="middle-1100">
+    
+    <h2 class="name-data"></h2>
+    <h1>Hi <span class="title-data"></span>!</h1>
+    <h2>This is your weigh-in for <span class="when-data"></span></h2>
+    <form id="weigh-in" action="/user-challenge-weigh-ins">
+        
+        <input type="hidden" name="cid" class="value-cid-data" />
+        <input type="hidden" name="uid" class="value-uid-data" />
+        <input type="hidden" name="when" class="value-when-data" />
+        <label>
+        
+            <span class="label-text">Weight</span>        
+            <input type="number" name="numeric" step=".01" /> kg
+
+        </label>
+        <div class="controls">
+            
+            <input type="submit" value="Save" />
+            
+        </div>
+    
+    </form>
+    <h1>All your weigh-ins for this challenge</h1>
+    <div class="readable-chart">
+        <canvas id="weighins-chart"></canvas>
+    </div>
+    
+</main>
+<script>
+    
+    /* global attempt, signups, urlParams, populate, parseISODate, challenges, moment, orDefault, renderChart, updateChart, incrementDateByDays, _ */
+    attempt( function() {
+    
+        var user = signups[ urlParams.uid ];
+        if ( !user ) { throw new Error( "User not found" ); }
+        populate( ".title-data", user.username || user.who );
+    
+        var challenge = challenges.find( function( c ) { return c.id === urlParams.cid; } );
+        if ( !challenge ) { throw new Error( "Challenge not found" ); }
+        populate( ".name-data", challenge.name );
+     
+        var when = parseISODate( urlParams.when );
+        var niceWhen = moment( when ).format( "dddd, Do MMMM, YYYY" );
+        populate( ".when-data", niceWhen );
+        
+        var weighins = orDefault( "weighins-" + challenge.id, {} );
+        var sortedWhens = Object.keys( weighins ).sort().filter( function( x ) { return !x.startsWith( "_" ); } );
+        var weighin = weighins[ urlParams.when ];
+        if ( !weighin ) { throw new Error( "Weigh-in not found" ); }
+        
+        var uid = urlParams.uid;
+        var userWeighin = weighin.participants[ uid ];
+        if ( !userWeighin ) { throw new Error( "No weighin found for this user" ); }
+        
+        var form = document.querySelector( "#weigh-in" );
+        var numeric = form[ "numeric" ];
+        populate( ".value-cid-data", function( el ) { el.value = challenge.id; } );
+        populate( ".value-uid-data", function( el ) { el.value = uid; } );
+        populate( ".value-when-data", function( el ) { el.value = urlParams.when; } );
+
+        numeric.value = userWeighin.numeric || "";
+
+        var ctx = document.querySelector( "#weighins-chart" ).getContext( "2d" );
+        var chart = window.chart = renderChart( ctx, {
+            
+            weighins: weighins,
+            sortedWhens: sortedWhens,
+            uid: uid,
+            liveValue: numeric.value,
+            liveWhen: when,
+            xmin: incrementDateByDays( parseISODate( challenge.start ), -2 ),
+            xmax: incrementDateByDays( parseISODate( challenge.end ), 2 )
+        
+        } );
+        
+        function handleLiveValueChange() {
+            
+            updateChart( chart, numeric.value );
+            
+        }
+        numeric.addEventListener( "keyup", _.debounce( handleLiveValueChange, 1000 ) );
+        numeric.addEventListener( "click", _.debounce( handleLiveValueChange, 1000 ) );
+
+    } );
+    
+</script>

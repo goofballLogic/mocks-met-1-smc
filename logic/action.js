@@ -18,6 +18,7 @@ window.attempt = function( logic, append ) {
     try {
         
         logic();
+        return true;
         
     } catch( ex ) {
         
@@ -25,7 +26,7 @@ window.attempt = function( logic, append ) {
         if ( !( append && result.innerHTML ) )
             result.innerHTML = "<h1>Oops</h1><p>That didn't work :(</p>";
         result.innerHTML += "<p>" + ex.message + "</p>";
-        result.innerHTML += "<h1>Diagnostic</h1>" + ex.stack;
+        result.innerHTML += "<h1>Diagnostic</h1><pre>" + ex.stack + "</pre>";
         result.innerHTML += "<h1>Stored data:<br /><br /></h1><div style='max-width: 600px; font-size: 8pt'>" + JSON.stringify( localStorage, null, 3 ) + "</div>";
         
     }

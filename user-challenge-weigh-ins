@@ -1,0 +1,49 @@
+<html>
+
+    <head>
+    
+        <meta charset="utf-8">
+        <title>Saving your weigh in</title>
+        
+    </head>
+    <body>
+    
+        Processing...
+        <div id="result"></div>
+        <script src="logic/date.js"></script>
+        <script src="logic/storage.js"></script>
+        <script src="logic/action.js"></script>
+        <script>
+
+            attempt( function() {        
+            
+                var uid = urlParams.uid;
+                var user = signups[ uid ];
+                if ( !user ) { throw new Error( "Oops :( That didn't work (code 1)" ); }
+
+                var cid = urlParams.cid;
+                var challenge = challenges.find( c => c.id === cid );
+                if ( !challenge ) { throw new Error( "Oops :( That didn't work (code 2)" ); }
+
+                var weighins = orDefault( "weighins-" + cid, {} );
+                var weighin = weighins[ urlParams.when ];
+                if ( !weighin ) { throw new Error( "Oops :( That didn't work (code 3)" ); }
+                
+                var userweighin = weighin.participants[ uid ];
+                if ( !userweighin ) { throw new Error( "Oops :( That didn't work (code 4)" ); }
+                
+                if ( !weighin.deadline ) { throw new Error( "Oops :( That didn't work (code 5)" ); }
+                var deadline = parseISODate( weighin.deadline );
+console.log( deadline, weighin.deadline );
+
+                if ( beforeToday( deadline ) ) { throw new Error( "Oops :( The deadline has already expired" ); }
+throw new Error();                
+                userweighin.numeric = Number( urlParams.numeric || 0 );
+                saveToStore( weighins );
+                location.href = "/user-home.html?uid=" + uid;
+                
+            } );
+
+        </script>
+    </body>
+</html>

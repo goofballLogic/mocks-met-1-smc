@@ -1,3 +1,26 @@
 <nav class="main">
+    
     <a href="/">Home</a>
+    <a href="/challenge.html?id={cid}" class="href-cid-data name-data" style="display: none;" id="challenge-link"></a>
+    
 </nav>
+<script>
+    
+    /* global urlParams, populate, challenges */
+    if ( !( typeof urlParams === "undefined" || typeof populate === "undefined" || typeof challenges === "undefined" || typeof attempt === "undefined" ) ) {
+        
+        if ( urlParams && urlParams.cid ) {
+            
+            var challenge = challenges && challenges.find( function( c ) { return c.id === urlParams.cid; } );
+            if ( challenge ) {
+                
+                populate( ".href-cid-data", function( el ) { el.href = el.href.replace( "{cid}", urlParams.cid ); } );
+                populate( ".name-data", challenge.name );
+                document.querySelector( "#challenge-link" ).style.display = "";
+                
+            }
+            
+        }
+        
+    }
+</script>

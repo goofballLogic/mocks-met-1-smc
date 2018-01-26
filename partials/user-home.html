@@ -30,10 +30,14 @@
     
         <li>
             
-            <a class="call-to-action name-data href-cid-data href-uid-data" href="user-challenge-home.html?cid={cid}&uid={uid}">open</a>
-            <br />
-            <span class="start-data"></span> - <span class="end-data"></span>
-        
+            <a class="call-to-action link-panel href-cid-data href-uid-data" href="user-challenge-home.html?cid={cid}&uid={uid}">
+            
+                <span class="name-data panel-title">open</span>
+                <br />
+                <span class="start-data"></span> - <span class="end-data"></span>
+            
+            </a>
+            
         </li>
     
     </template>
@@ -56,11 +60,12 @@
             return challenges.find( function( c ) { return c.id === id; } ); 
             
         } );
+        console.log( user );
         entemplate( "#challenge", "#active-challenges", userChallenges, function( populateNode, data ) {
             
             populateNode( ".name-data", data.name );
-            populateNode( ".start-data", moment( data.start ).format( "LLL" ) );
-            populateNode( ".end-data", moment( data.end ).format( "LLL" ) );
+            populateNode( ".start-data", moment( data.start ).format( "dddd, MMMM Do YYYY" ) );
+            populateNode( ".end-data", moment( data.end ).format( "dddd, MMMM Do YYYY" ) );
             populateNode( ".href-cid-data", function( el ) { el.href = el.href.replace( "{cid}", data.id ); } );
             populateNode( ".href-uid-data", function( el ) { el.href = el.href.replace( "{uid}", uid ); } );
         

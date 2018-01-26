@@ -5,7 +5,10 @@
             
         <p>Challenge data for <span class="title-data">?</span></p>
         <h1 class="name-data"></h1>
-
+        
+        <h1>Your progress</h1>
+        <canvas id="weighins-chart"></canvas>
+        
     </section>
     <template id="challenge">
     
@@ -22,7 +25,7 @@
 </main>
 <script>
     
-    /* global attempt, populate, urlParams, signups, moment, entemplate, challenges */
+    /* global attempt, populate, urlParams, signups, challenges, incrementDateByDays, parseISODate, renderChart, orDefault */
     attempt( function() {
         
         var uid = urlParams.uid;
@@ -35,6 +38,21 @@
         
         populate( ".title-data", [ user.username, user.who ].filter( function( x ) { return !!x; } ).join( " - " ) );
         populate( ".name-data", challenge.name );
+        
+        var weighins = orDefault( "weighins-" + challenge.id, {} );
+        var sortedWhens = Object.keys( weighins ).sort().filter( function( x ) { return !x.startsWith( "_" ); } );
+        
+        var ctx = document.querySelector( "#weighins-chart" ).getContext( "2d" );
+        renderChart( ctx, {
+            
+            weighins: weighins,
+            sortedWhens: sortedWhens,
+            uid: uid,
+            xmin: incrementDateByDays( parseISODate( challenge.start ), -2 ),
+            xmax: incrementDateByDays( parseISODate( challenge.end ), 2 )
+        
+        } );
+        
 /*        populate( ".username-data", user.username );
         populate( ".when-data", moment( user.when ).format( "LLLL" ) );
         var userChallenges = ( user.challenges || [] ).map( function( id ) {  

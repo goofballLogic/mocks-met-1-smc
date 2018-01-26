@@ -10,6 +10,7 @@
     
         Processing...
         <div id="result"></div>
+        <script src="logic/polyfills.js"></script>
         <script src="logic/storage.js"></script>
         <script src="logic/action.js"></script>
         <script src="logic/date.js"></script>
@@ -25,17 +26,29 @@
                 
                 var key = urlParams.when;
                 var when = parseISODate( urlParams.when );
-                var deadline = parseISODate( urlParams.deadline );
-                
-                if ( new Date() > deadline ) { throw new Error( "Deadline before today" ); }
-                if ( deadline < when ) { throw new Error( "Deadline before wiegh-in date" ); }
-
                 var weighIns = orDefault( "weighins-" + id, {} );
-                if ( key in weighIns ) { throw new Error( "Weigh-in already scheduled for that day" ); }
+                var weighIn = weighIns[ key ];
+               
+                if ( !weighIn ) {
+
+                    if ( !urlParams.deadline ) { throw new Error( "No deadline specified" ); }
+                    deadline = parseISODate( urlParams.deadline );
+   
+                    if ( new Date() > deadline ) { throw new Error( "Deadline before today" ); }
+                    if ( deadline < when ) { throw new Error( "Deadline before wiegh-in date" ); }
+
+                    var partIds = Object.values( challenge.participants || {} );
+                    weighIn = {
                 
-                var partIds = Object.values( challenge.participants || {} );
-                weighIns[ key ] = partIds.reduce( function( prev, uid ) { return Object.assign( prev, { [ uid ]: {} } ); }, {} );
-                saveToStore( weighIns );
+                        participants: partIds.reduce( function( prev, uid ) { return Object.assign( prev, { [ uid ]: { } } ); }, {} ),
+                        deadline: ISODate( deadline )
+                    
+                    };
+                    weighIns[ key ] = weighIn;
+                    saveToStore( weighIns );
+
+                }
+                
                 var templ = [
                     
                     "Hi {title}!,",
@@ -44,28 +57,32 @@
                     "",
                     "Weigh-in date: {when}",
                     "Deadline: {deadline}",
-                    "<a href=\"" + makeAbsolute( "/weigh-ins?cid=" + id + "&uid={uid}" ) + "\">Weigh in</a>",
+                    "<a href=\"" + makeAbsolute( "/weigh-ins.html?cid=" + id + "&uid={uid}&when={when-raw}" ) + "\">Weigh in</a>",
                     "",
                     "regards,",
                     "the " + challenge.name + " team"
                     
                 ].join( "<br />\n" );
-                Object.keys( weighIns[ key ] ).forEach( function( uid ) {
+               
+                var recipients = urlParams.uid ? [ urlParams.uid ] : Object.keys( weighIn.participants );
+                var succeeded = true;
+                recipients.forEach( function( uid ) {
                 
-                    attempt( function() {
+                    succeeded = succeeded & attempt( function() {
 
                         var user = signups[ uid ];
                         if ( !user ) { throw new Error( "User " + uid + " not found" ); }
                         var email = user.who;
                         var title = user.username || user.who;
                         var niceWhen = moment( when ).format( "dddd Do, MMMM YYYY" );
-                        var niceDeadline = "End of day " + moment( deadline ).format( "dddd Do, MMMM YYYY" );
-                        var body = templ.replace( "{title}", title ).replace( "{when}", niceWhen ).replace( "{deadline}", niceDeadline ).replace( "{uid}", uid );
+                        var niceDeadline = "End of day " + moment( weighIn.deadline ).format( "dddd Do, MMMM YYYY" );
+                        var body = templ.replace( "{title}", title ).replace( "{when}", niceWhen ).replace( "{deadline}", niceDeadline ).replace( "{uid}", uid ).replace( "{when-raw}", key );
                         sendEmail( email, "Weigh-in deadline: " + niceDeadline, body );
                         
                     }, true );
                 
                 } );
+                if ( succeeded ) { history.back(); }
 
             } );
 

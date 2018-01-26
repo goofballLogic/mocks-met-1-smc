@@ -2,103 +2,53 @@
     
     <span id="result"></span>
     <h1 class="name-data"></h1>
-    <div class="columns">
+    <p>
+
+        <a class="href-id-data call-to-action" href="schedule-weigh-in.html?cid={id}">Schedule a weigh in</a>
+
+    </p>
+    <p>Sign up link: 
+
+        <div class="inset-viewer">
+
+            <a class="href-signup-data signup-data" href="" target="_blank"></a>
+
+        </div>
+
+    </p>
+    <p>Instructions: (<a class="href-id-data" href="/edit-instructions.html?id={id}">Edit</a>)</p>
+    <article class="inset-viewer instructions-data">
         
-        <section class="flex-2">
-
-            <p>
-
-                <a class="href-id-data call-to-action" href="schedule-weigh-in.html?cid={id}">Schedule a weigh in</a>
-
-            </p>
-            <p>Sign up link: 
-
-                <div class="inset-viewer">
-
-                    <a class="href-signup-data signup-data" href=""></a>
-
-                </div>
-
-            </p>
-            <p>Instructions: (<a class="href-id-data" href="/edit-instructions.html?id={id}">Edit</a>)</p>
-            <article class="inset-viewer instructions-data">
-                
-            </article>
-            <p>&nbsp;</p>
-            <p>Image: (<a class="href-id-data" href="/edit-image.html?id={id}">Choose a new image</a>)</p>
-            <img src="ntd-small.png" class="inset-viewer src-image-data" />
-            
-        </section>
-        <section>
-            
-            
-            <table>
-                
-                <thead>
-                    
-                    <tr>
-                        
-                        <th><span class="count-data">?</span> participants</th>
-                        
-                    </tr>
-                    
-                </thead>
-                <tbody id="participants">
-                     
-                </tbody>
-                
-            </table>
-            
-        </section>
-        
-    </div>
+    </article>
+    <p>&nbsp;</p>
+    <p>Image: (<a class="href-id-data" href="/edit-image.html?id={id}">Choose a new image</a>)</p>
+    <img src="ntd-small.png" class="inset-viewer src-image-data" />
     
 </main>
 <template id="participant-template">
     
-    <tr><td><a class="href-uid-data href-id-data key-data" href="/user-challenge-home.html?cid={id}&uid={uid}"></a></td></tr>
+    <tr><td><a class="href-uid-data href-id-data key-data" href="/user-challenge-home.html?cid={id}&uid={uid}" target="_blank"></a></td></tr>
     
 </template>
 <script>
 
-    /* global urlParams, challenges, localStorage, location */
-    var challenge = challenges.find( c => c.id === urlParams.id );
-    Array.from( document.querySelectorAll( ".href-id-data" ) ).forEach( function( idLink ) {
+    /* global attempt, populate, urlParams, challenges, localStorage, location */
+    attempt( function() {
         
-        idLink.href = idLink.href.replace( "{id}", challenge.id );
-        
-    } );
-    var element;
-    for ( element of document.querySelectorAll( ".signup-data" ) )
-        element.textContent = location.origin + "/sign-up.html?challenge=" + challenge.id;
-    for ( element of document.querySelectorAll( ".href-signup-data" ) )
-        element.href = location.origin + "/sign-up.html?challenge=" + challenge.id;
-    
-    document.querySelector( ".name-data" ).textContent = challenge.name;
-    document.title = challenge.name;
-    document.querySelector( ".instructions-data" ).innerHTML = challenge.instructions || "?";
-    var imageData = localStorage[ challenge.id + "-image" ];
-    if( imageData ) document.querySelector( ".src-image-data" ).src = imageData;
-    document.querySelector( ".count-data" ).textContent = Object.keys( challenge.participants || {} ).length;
-    var container = document.querySelector( "#participants" );
-    var content = document.querySelector( "#participant-template" ).content;
-    
-    var partis = Object.keys( challenge.participants || {} ).map( function( username ) { 
-        
-        return { 
+        var challenge = challenges.find( c => c.id === urlParams.id );
+        Array.from( document.querySelectorAll( ".href-id-data" ) ).forEach( function( idLink ) {
             
-            id: challenge.participants[ username ],
-            username: username
+            idLink.href = idLink.href.replace( "{id}", challenge.id );
             
-        };
-        
-    } ).sort();
-    entemplate( "#participant-template", "#participants", partis, function( populateNode, item ) {
-        
-        populateNode( ".key-data", item.username );
-        populateNode( ".href-id-data", function( el ) { el.href = el.href.replace( "{id}", urlParams.id ); } );
-        populateNode( ".href-uid-data", function( el ) { el.href = el.href.replace( "{uid}", item.id ); } );
-        
+        } );
+        populate( ".signup-data", location.origin + "/sign-up.html?challenge=" + challenge.id );
+        populate( ".href-signup-data", function( el ) { el.href = location.origin + "/sign-up.html?challenge=" + challenge.id; } );
+        populate( ".name-data", challenge.name );
+        document.title = challenge.name;
+        populate( ".instructions-data", function( el ) { el.innerHTML = challenge.instructions || "?"; } );
+        var imageData = localStorage[ challenge.id + "-image" ];
+        if( imageData ) populate( ".src-image-data", function( el ) { el.src = imageData; } );
+
     } );
 
 </script>

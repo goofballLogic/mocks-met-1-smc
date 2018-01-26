@@ -1,0 +1,57 @@
+<aside class="flex-2">
+    
+    <h3>Scheduled weigh-ins</h3>
+    <table>
+        
+        <thead>
+        
+            <th></th>
+            <th>Weigh-in date</th>
+            <th></th>
+            
+        </thead>
+        <tbody id="scheduled">
+            
+            
+        </tbody>
+        
+    </table>
+    <template id="scheduled-template">
+        
+        <tr>
+            
+            <td class="index-data"></td>
+            <td class="when-data"></td>
+            <td><a class="href-id-data href-when-data" href="/challenge-weigh-in.html?cid={id}&when={when}">Detail</a></td>
+            
+        </tr>
+        
+    </template>
+    
+</aside>
+<script>
+
+    /* global attempt, challenges, populate, urlParams, parseISODate, incrementDateByDays, ISODate, moment, entemplate, orDefault */
+    attempt( function() {
+        
+        var challenge = challenges.find( c => c.id === urlParams.cid || c.id === urlParams.id );
+        if ( !challenge ) { throw new Error( "Challenge not found" ); }
+        
+        var weighIns = orDefault( "weighins-" + challenge.id, {} );
+    
+        var index = 0;
+        var whens = Object.keys( weighIns ).sort().filter( function( x ) { return !x.startsWith( "__" ); } );
+        entemplate( "#scheduled-template", "#scheduled", whens, function( populateNode, value ) {
+            
+            var niceWhen = moment( parseISODate( value ) ).format( "dddd, Do of MMMM" );
+            populateNode( ".href-id-data", function( ele ) { ele.href = ele.href.replace( "{id}", challenge.id ); } );
+            populateNode( ".href-when-data", function( ele ) { ele.href = ele.href.replace( "{when}", value ); } );
+            populateNode( ".index-data", ++index );
+            populateNode( ".when-data", niceWhen );
+            
+        } );
+        
+    } );
+        
+
+</script>
