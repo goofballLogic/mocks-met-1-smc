@@ -22,12 +22,10 @@
                 if ( !name ) { throw new Error( "Name missing" ); }
                 if ( !start ) { throw new Error( "Start missing" ); }
                 if ( !end ) { throw new Error( "End missing" ); }
-                start = moment( start );
-                end = moment( end );
-                if ( !start.isValid() ) throw new Error( "Start value invalid: " + urlParams.start );
-                if ( !end.isValid() ) throw new Error( "End value invalid: " + urlParams.end );
+                start = parseISODate( start );
+                end = parseISODate( end );
                 var cid = newid();
-                challenges.push( { id: cid, start: ISODate( start ), end: ISODate( end ), name: name } );
+                challenges.push( { id: cid, start: ISODate( start ), end: ISODate( end ), name: name, participants: {} } );
                 saveToStore( challenges );
                 location.href = "/challenge.html?id=" + cid;
 

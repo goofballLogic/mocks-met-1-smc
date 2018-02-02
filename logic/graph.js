@@ -1,7 +1,31 @@
 /* global ISODate, parseISODate, moment, Chart, Image */
 ( function() {
 
-    
+Chart.pluginService.register({
+    beforeDraw: function (chart, easing) {
+        
+        if ( chart.config.options.chartArea ) {
+            var ctx = chart.chart.ctx;
+            var chartArea = chart.chartArea;
+            var options = chart.config.options.chartArea;
+            
+            var width = chartArea.right - chartArea.left;
+            var height = ( chartArea.bottom - chartArea.top ) / 6;
+            
+            console.log( width, height );
+            ctx.save();
+            ctx.fillStyle = options.danger;
+            ctx.fillRect( chartArea.left, chartArea.top, width, height );
+            ctx.fillStyle = options.warning;
+            ctx.fillRect( chartArea.left, chartArea.top + height, width, height );
+            ctx.fillStyle = options.good;
+            ctx.fillRect( chartArea.left, chartArea.top + ( height * 2 ), width, height );
+            ctx.restore();
+        }
+    }
+});
+
+            
 function suggestMinMax( series ) {
     
     var values = series.map( x => x.y );
@@ -151,7 +175,14 @@ window.renderChart = function renderChart( ctx, options ) {
                     
                 } ]
                 
-            }    
+            },
+            chartArea: {
+                
+                danger: "rgba( 255, 0, 0, 0.4 )",
+                warning: "rgba( 255, 0, 0, 0.1 )",
+                good: "transparent"
+            
+            }   
             
         }
         

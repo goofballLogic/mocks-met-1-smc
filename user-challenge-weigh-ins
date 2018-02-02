@@ -34,10 +34,8 @@
                 
                 if ( !weighin.deadline ) { throw new Error( "Oops :( That didn't work (code 5)" ); }
                 var deadline = parseISODate( weighin.deadline );
-console.log( deadline, weighin.deadline );
-
                 if ( beforeToday( deadline ) ) { throw new Error( "Oops :( The deadline has already expired" ); }
-throw new Error();                
+
                 userweighin.numeric = Number( urlParams.numeric || 0 );
                 saveToStore( weighins );
                 location.href = "/user-home.html?uid=" + uid;

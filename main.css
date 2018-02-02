@@ -180,6 +180,12 @@ nav.main {
 
 }
 
+.danger {
+    
+    color: red;
+    font-weight: bold;
+    
+}
 nav.participant {
 
     position: absolute;
